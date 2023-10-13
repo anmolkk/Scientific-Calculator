@@ -1,0 +1,15 @@
+E:\csharp\Calculator\bin\Debug\Calculator.exe.config
+E:\csharp\Calculator\bin\Debug\Calculator.exe
+E:\csharp\Calculator\bin\Debug\Calculator.pdb
+E:\csharp\Calculator\bin\Debug\Arithmetic.dll
+E:\csharp\Calculator\bin\Debug\Arithmetic.pdb
+E:\csharp\Calculator\obj\Debug\Calculator.csproj.AssemblyReference.cache
+E:\csharp\Calculator\obj\Debug\Calculator.csproj.CoreCompileInputs.cache
+E:\csharp\Calculator\obj\Debug\Calculator.csproj.CopyComplete
+E:\csharp\Calculator\obj\Debug\Calculator.exe
+E:\csharp\Calculator\obj\Debug\Calculator.pdb
+E:\csharp\Calculator\bin\Debug\Power.dll
+E:\csharp\Calculator\bin\Debug\Power.pdb
+C:\VISPL\Bin\Calculator.exe.config
+C:\VISPL\Bin\Calculator.exe
+C:\VISPL\Bin\Calculator.pdb

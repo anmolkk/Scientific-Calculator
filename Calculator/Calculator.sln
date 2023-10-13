@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34202.233
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator", "Calculator.csproj", "{7F12FE06-4F37-4FDD-866C-9AA223E0868C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arithmetic", "Arithmetic\Arithmetic.csproj", "{61B4B63B-8420-4FB2-B7F4-3C70C29EFA67}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Power", "Power\Power.csproj", "{6F99961E-B3EF-4E92-87A8-2BC8E4C35B73}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7F12FE06-4F37-4FDD-866C-9AA223E0868C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F12FE06-4F37-4FDD-866C-9AA223E0868C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F12FE06-4F37-4FDD-866C-9AA223E0868C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F12FE06-4F37-4FDD-866C-9AA223E0868C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61B4B63B-8420-4FB2-B7F4-3C70C29EFA67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61B4B63B-8420-4FB2-B7F4-3C70C29EFA67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61B4B63B-8420-4FB2-B7F4-3C70C29EFA67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61B4B63B-8420-4FB2-B7F4-3C70C29EFA67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F99961E-B3EF-4E92-87A8-2BC8E4C35B73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F99961E-B3EF-4E92-87A8-2BC8E4C35B73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F99961E-B3EF-4E92-87A8-2BC8E4C35B73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F99961E-B3EF-4E92-87A8-2BC8E4C35B73}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F7755B38-8E46-48CD-9B07-EAA7181B94D3}
+	EndGlobalSection
+EndGlobal

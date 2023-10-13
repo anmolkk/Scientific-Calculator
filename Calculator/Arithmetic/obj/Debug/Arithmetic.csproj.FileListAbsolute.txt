@@ -1,0 +1,8 @@
+E:\csharp\Calculator\Arithmetic\bin\Debug\Arithmetic.dll
+E:\csharp\Calculator\Arithmetic\bin\Debug\Arithmetic.pdb
+E:\csharp\Calculator\Arithmetic\obj\Debug\Arithmetic.csproj.AssemblyReference.cache
+E:\csharp\Calculator\Arithmetic\obj\Debug\Arithmetic.csproj.CoreCompileInputs.cache
+E:\csharp\Calculator\Arithmetic\obj\Debug\Arithmetic.dll
+E:\csharp\Calculator\Arithmetic\obj\Debug\Arithmetic.pdb
+C:\VISPL\Bin\Arithmetic.dll
+C:\VISPL\Bin\Arithmetic.pdb
