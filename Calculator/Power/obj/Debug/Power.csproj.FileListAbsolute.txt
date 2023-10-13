@@ -1,0 +1,8 @@
+E:\csharp\Calculator\Power\bin\Debug\Power.dll
+E:\csharp\Calculator\Power\bin\Debug\Power.pdb
+E:\csharp\Calculator\Power\obj\Debug\Power.csproj.AssemblyReference.cache
+E:\csharp\Calculator\Power\obj\Debug\Power.csproj.CoreCompileInputs.cache
+E:\csharp\Calculator\Power\obj\Debug\Power.dll
+E:\csharp\Calculator\Power\obj\Debug\Power.pdb
+C:\VISPL\Bin\Power.dll
+C:\VISPL\Bin\Power.pdb
