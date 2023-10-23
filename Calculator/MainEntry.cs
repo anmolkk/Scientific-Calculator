@@ -16,7 +16,7 @@ namespace TestCalculator
             int integer = 0;
             int counter = 0;
             bool hasnumber = false;
-            int countOfOperators = 0;
+
             for (int index = 0; index < equationLength; index++)
             {
                 var input = equation[index];
@@ -51,60 +51,86 @@ namespace TestCalculator
                 }
                 else if ((input == 42 || input == 43 || input == 45 || input == 47 || input == 94 || input == 37) && hasnumber)
                 {
-                    if (countOfOperators >= 1)
-                    {
-                        if (countOfOperators >= 2)
-                        {
-                            return;
-                        }
-                        else if (input == 47)
-                        {
-                            hasnumber = false;
-                            parserInput[counter] = input;
-                            counter++;
-                            countOfOperators++;
-                        }
-                        else
-                        {
-                            Console.WriteLine("Please Enter the correct Equation");
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        countOfOperators++;
-                        hasnumber = false;
-                        parserInput[counter] = input;
-                        counter++;
-                    }
+                    hasnumber = false;
+                    parserInput[counter] = input;
+                    counter++;
                 }
-                else if (!hasnumber)
+                else if (!hasnumber && input != ' ')
                 {
                     Console.WriteLine("Please Enter the correct equation");
                     return;
                 }
+                else if (input == '=')
+                {
+                    break;
+                }
             }
 
-            if (countOfOperators == 0)
-            {
-                Console.WriteLine("You have Not entered any operator");
-                return;
-            }
-            else if ((countOfOperators == 1 && parserInput.Length != 3) || (countOfOperators == 2 && parserInput.Length != 5))
-            {
-                return;
-            }
 
-            if (parserInput[1] == 42 || parserInput[1] == 43 || parserInput[1] == 45 || parserInput[1] == 47 || parserInput[1] == 37)
+            int solution = 0;
+            int? lastCheckedOperator = null;
+            for (int index = 1; index < counter; index++)
             {
-                ArithemeticCalculations(parserInput);
-            }
-            else
-            {
-                PowerCalculations(parserInput, countOfOperators);
-            }
+                if (parserInput[index] == 42 || parserInput[index] == 43 || parserInput[index] == 45 || parserInput[index] == 47 || parserInput[index] == 94 || parserInput[index] == 37){
+                    if (CheckPrecision(index, lastCheckedOperator))
+                    {
+                        lastCheckedOperator = null;
+                        if (parserInput[index] == 43)
+                        {
+                            if (solution != 0)
+                            {
+                                solution += parserInput[index + 1];
+                            }
+                            else if (parserInput[index + 1] != 40)
+                                solution += parserInput[index - 1] + parserInput[index + 1];
+                        }
+                        else if (parserInput[index] == 42)
+                        {
+                            if (solution != 0)
+                            {
+                                solution *= parserInput[index + 1];
+                            }
+                            else if (parserInput[index + 1] != 40)
+                                solution += parserInput[index - 1] * parserInput[index + 1];
+                        }
+                        else if (parserInput[index] == 45)
+                        {
+                            if (solution != 0)
+                            {
+                                solution -= parserInput[index + 1];
+                            }
+                            else if (parserInput[index + 1] != 40)
+                                solution += parserInput[index - 1] - parserInput[index + 1];
+                        }
+                        else if (parserInput[index] == 47)
+                        {
+                            if (solution != 0)
+                            {
+                                solution /= parserInput[index + 1];
+                            }
+                            else if (parserInput[index + 1] != 40)
+                                solution += parserInput[index - 1] / parserInput[index + 1];
+                        }
+                    }
+                }
 
+
+                
+            }
+            Console.WriteLine(solution);
         }
+
+
+        public static bool CheckPrecision(int currentOperator, int? lastCheckedOperator)
+        {
+            if (lastCheckedOperator != null && (currentOperator == 42 || currentOperator == 47 || currentOperator == 37))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
 
         static void ArithemeticCalculations(int[] parserInput)
         {
@@ -113,6 +139,7 @@ namespace TestCalculator
 
             CalculateFloat arithmeticCalculator = new CalculateFloat();
             float? result = null;
+           
             switch (parserInput[1])
             {
                 case 43:
@@ -142,9 +169,10 @@ namespace TestCalculator
 
             if (result.HasValue)
                 Console.WriteLine("Result Of Calculation is : " + result);
-
-
         }
+
+
+
 
         static void PowerCalculations(int[] parserInput, int countOfOperators)
         {
@@ -170,11 +198,11 @@ namespace TestCalculator
                 else if (countOfOperators == 2)
                 {
                     double thirdNumber = parserInput[4];
-                    if (secondNumber ==1 && parserInput[4] == 2)
+                    if (secondNumber == 1 && parserInput[4] == 2)
                     {
                         result = powerCalculator.SquareRoot(firstNumber);
                     }
-                    else if(secondNumber == 1 && parserInput[4] == 3)
+                    else if (secondNumber == 1 && parserInput[4] == 3)
                     {
                         result = powerCalculator.CubeRoot(firstNumber);
                     }
