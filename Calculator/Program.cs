@@ -12,7 +12,7 @@ namespace Calculator
             TestCase programEntry = new TestCase();
             while (true)
             {
-                programEntry.Calculator();
+                programEntry.Calculate();
                 Console.WriteLine();
             }
         }

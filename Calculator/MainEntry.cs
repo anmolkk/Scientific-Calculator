@@ -138,7 +138,7 @@ namespace TestCalculator
             int secondNumber = parserInput[2];
 
             CalculateFloat arithmeticCalculator = new CalculateFloat();
-            float? result = null;
+            double? result = null;
            
             switch (parserInput[1])
             {

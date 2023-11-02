@@ -39,7 +39,7 @@ namespace CalculatorEntry
             int equationLength = equation.Length;
             int integer = 0;
             bool hasnumber = false;
-            float result = 0;
+            double result = 0;
 
             for (int index = 0; index < equationLength; index++)
             {
@@ -87,7 +87,7 @@ namespace CalculatorEntry
                             firstNumber = Convert.ToDouble(operandStack.Pop());
                             secondNumber = Convert.ToDouble(equation[index + 1] - 48);
                             index++;
-                            double doubleResult = powerCalculator.PowerAll(firstNumber, secondNumber);
+                            double doubleResult = powerCalculator.Power(firstNumber, secondNumber);
                             operandStack.Push(doubleResult);
                             hasnumber = true;
                         }
@@ -211,7 +211,7 @@ namespace CalculatorEntry
             int integer = 0;
             int equationLength = equation.Length;
             bool hasnumber = true;
-            float result = 0;
+            double result = 0;
             for (int index = i; index <equationLength; index++)
             {
                 if (equation[index] == ')')
@@ -263,7 +263,7 @@ namespace CalculatorEntry
                             firstNumber = Convert.ToDouble(operandStackForParenthesis.Pop());
                             secondNumber = Convert.ToDouble(equation[index + 1] - 48);
                             index++;
-                            double doubleResult = powerCalculator.PowerAll(firstNumber, secondNumber);
+                            double doubleResult = powerCalculator.Power(firstNumber, secondNumber);
                             operandStackForParenthesis.Push(doubleResult);
                         }
                         catch

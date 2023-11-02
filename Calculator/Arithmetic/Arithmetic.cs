@@ -1,28 +1,67 @@
-﻿namespace Arithmetic
+﻿using System;
+
+namespace Arithmetic
 {
     public class CalculateFloat
     {
-        public float Addition(int a, int b)
+        /// <summary>
+        /// Adding tWo Double Numbers.
+        /// </summary>
+        /// <param name="a">Double Type </param>
+        /// <param name="b">Double Type </param>
+        /// <returns></returns>
+        public double Addition(double a, double b)
         {
             return a + b;
         }
 
-        public float Subtraction(int a, int b)
+        /// <summary>
+        /// Sbtracting Two Numbers
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public double Subtraction(double a, double b)
         {
             return a - b;
         }
 
-        public float Multiplication(int a, int b)
+        /// <summary>
+        /// Multiplying Two Numbers
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public double Multiplication(double a, double b)
         {
             return a * b;
         }
 
-        public float Division(int a, int b)
+        /// <summary>
+        /// Dividing Two Number. Divide first Number by Second Number.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        /// <exception cref="DivideByZeroException"></exception>
+        public double Division(double a, double b)
         {
-            return a / b;
+            double result = a / b;
+            if (result == (1.0 / 0) || -result == (1.0 / 0))
+            {
+                throw new DivideByZeroException();
+            }
+            return result;
         }
 
-        public float Modulus(int a, int b)
+
+        /// <summary>
+        /// Check the Remainder of a Number.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public double Modulus(double a, double b)
         {
             return a % b;
         }
