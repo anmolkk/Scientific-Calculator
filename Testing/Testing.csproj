@@ -43,8 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes.cs" />
+    <Compile Include="DivisionUsingMultiplication.cs" />
+    <Compile Include="FractionalPower.cs" />
     <Compile Include="FunctionOverLoading.cs" />
     <Compile Include="OptionalParams.cs" />
+    <Compile Include="OverloadTrueFalse.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

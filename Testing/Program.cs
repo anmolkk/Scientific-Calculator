@@ -1,6 +1,11 @@
 ﻿using System;
 using Optional;
 using Overloading;
+using Power;
+using OverloadTrueFalse;
+using System.Threading;
+using AttributeExample;
+using Division;
 
 namespace Testing
 {
@@ -8,13 +13,40 @@ namespace Testing
     {
         static void Main()
         {
-            FunctionOverLoading.Entry();
+            while (true){
+                DivisionUsingMultiplication.MainEntry();
+            }
+
+            
+
+            //Attributes.Entry();
+
+
+/*        start:
+            int i = Console.ReadKey().KeyChar - 48;
+            Console.WriteLine();
+            switch (i){
+                case 1:
+                case 2:
+                    Console.WriteLine(i);
+                    break;
+                case 3:
+                    Console.WriteLine(i);
+                    goto start;
+                    break;
+                default:
+                    Console.WriteLine(i);
+                    goto start;
+                    break;
+            }*/
+            //LaunchStatusTest.MainE();
+            //FractionalPower.Squareroot();
+            //FunctionOverLoading.Entry();
         }
         static void MainE()        
         {
             Console.Write("Enter the Size of Array : ");
             string size = Console.ReadLine();
-
             int sizeInInt;
             if (!int.TryParse(size, out sizeInInt))
             {
