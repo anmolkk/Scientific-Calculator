@@ -7,49 +7,86 @@ namespace Power
     {
         public double SquareRoot(double number)
         {
-/*            double start = 0;
-            double end = number;
-
-            while (end - start > 1e-10)
+            int tryInt = 0;
+            double tryValue = 0;
+            double lastTryValue = 0;
+            while (true)
             {
-                double mid = (start + end) / 2;
-                double midSqr = mid * mid;
-
-                if (midSqr == number)
-                    return mid;
-                else if (midSqr < number)
-                    start = mid;
+                double sumOfTryInt = tryInt * tryInt;
+                if (sumOfTryInt == number)
+                {
+                    return tryInt;
+                }
+                else if (sumOfTryInt < number)
+                {
+                    tryValue = tryInt;
+                    tryInt += 1;                    
+                }
                 else
-                    end = mid;
+                {
+                    double sum = tryValue * tryValue;
+                    if (sum == number)
+                    {
+                        return tryValue;
+                    }
+                    else if (sum < number)
+                    {
+                        lastTryValue = tryValue;
+                        tryValue += 0.001;
+                    }
+                    else
+                    {
+                        return lastTryValue;
+                    }
+                }
             }
-
-            return (start + end) / 2;*/
-
-            return Math.Pow(number, 1/2);
         }
 
-        public double Cube(double a)
+        public double CubeRoot(double number)
         {
-            return a * a * a;
-        }
-
-        public double CubeRoot(double a)
-        {
-            return Math.Pow(a, 1 / 3);
+            int tryInt = 0;
+            double tryValue = 0;
+            double lastTryValue = 0;
+            while (true)
+            {
+                double sumOfTryInt = tryInt * tryInt * tryInt;
+                if (sumOfTryInt == number)
+                {
+                    return tryInt;
+                }
+                else if (sumOfTryInt < number)
+                {
+                    tryValue = tryInt;
+                    tryInt += 1;
+                }
+                else
+                {
+                    double sum = tryValue * tryValue* tryValue;
+                    if (sum == number)
+                    {
+                        return tryValue;
+                    }
+                    else if (sum < number)
+                    {
+                        lastTryValue = tryValue;
+                        tryValue += 0.001;
+                    }
+                    else
+                    {
+                        return lastTryValue;
+                    }
+                }
+            }
         }
 
         public double Power(double a, double power)
         {
-            if (power == 0 || power == 1)
-                return a;
+            if (power == 0)
+                return 1;
 
             double result = 1;
             for (int i = 0; i < power; i++)
             {
-                if(power == 0)
-                {
-                    return 1;
-                }
                 result *= a;
             }
             return result;
@@ -59,5 +96,13 @@ namespace Power
         {
             return Math.Pow(a, power);
         }
-    }    
+
+        public double Factorial(double a)
+        {
+            if (a == 0)
+                return 1;
+
+            return a * Factorial(a-1);
+        }
+    }
 }

@@ -16,17 +16,6 @@ namespace Arithmetic
         }
 
         /// <summary>
-        /// Sbtracting Two Numbers
-        /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <returns></returns>
-        public double Subtraction(double a, double b)
-        {
-            return a - b;
-        }
-
-        /// <summary>
         /// Multiplying Two Numbers
         /// </summary>
         /// <param name="a"></param>
@@ -53,7 +42,6 @@ namespace Arithmetic
             }
             return result;
         }
-
 
         /// <summary>
         /// Check the Remainder of a Number.
