@@ -3,6 +3,7 @@ using Power;
 using System;
 using StackOperations;
 using System.Text;
+using System.Linq;
 
 namespace CalculatorTest
 {
@@ -10,13 +11,21 @@ namespace CalculatorTest
     {
         static CalculateFloat arithmeticCalculator;
         static PowerCalculations powerCalculator;
-        static double memory;
         static StringBuilder outputThirdLine;
+        static StringBuilder outputSecondline;
+        static StringBuilder outputFirstLine;
+        static short historyPointer;
+        static string[] history;
+        static double memory;
         public TestCase()
         {
             arithmeticCalculator = new CalculateFloat();
             powerCalculator = new PowerCalculations();
             outputThirdLine = new StringBuilder("DEG            E-F         ");
+            outputSecondline = new StringBuilder("");
+            outputFirstLine = new StringBuilder("");
+            history = new string[short.MaxValue - 1];
+            historyPointer = 0;
             memory = 0;
         }
         ~TestCase()
@@ -26,33 +35,43 @@ namespace CalculatorTest
         }
         public void Calculate()
         {
-            double? result = null;
+            string result = null;
             Console.Title = "Scientific Calculator";
             Console.CursorVisible = false;
+            Console.BufferWidth = Console.LargestWindowWidth;
             while (true)
             {
                 int index = -1;
                 try
                 {
                     Input(out string equation, result);
-                    result = Calculator(ref index, equation, true);
+                    result = Calculator(ref index, equation, true).ToString();
+                    outputSecondline.Clear();
+                    ClearInput(equation);
+                    //outputFirstLine.Replace(outputFirstLine.ToString(), "0");
                 }
                 catch (Exception e)
                 {
                     Console.Clear();
+                    outputSecondline.Clear();
                     Console.WriteLine(e.Message);
                     continue;
                 }
-                Console.WriteLine(PrintResult(result.Value));
+                Console.SetCursorPosition(0, 1);
+                Console.Write(PrintResult(result));
             }
         }
 
-        static void Input(out string equation, double? result)
+        static void Input(out string equation, string result)
         {
             equation = "";
+            int index = -1;
             bool gettingInput = true;
             bool decimalCounted = false;
-            Console.Write(0);
+            bool lastOperator = false;
+            bool MathFunctionCalled = false;
+            outputFirstLine.Clear();
+            outputSecondline.Clear();
             Console.SetCursorPosition(0, 2);
             Console.WriteLine(outputThirdLine);
             Console.SetCursorPosition(0, 17);
@@ -60,7 +79,7 @@ namespace CalculatorTest
             Console.SetCursorPosition(0, 0);
             while (gettingInput)
             {
-                ConsoleKeyInfo cki = Console.ReadKey();
+                ConsoleKeyInfo cki = Console.ReadKey(true);
                 if ((cki.Modifiers & ConsoleModifiers.Control) != 0)
                 {
                     if (cki.Key == ConsoleKey.M)
@@ -72,7 +91,7 @@ namespace CalculatorTest
                         }
                         catch
                         {
-                            memory = result.Value;
+                            memory = Convert.ToDouble(result);
                         }
 
                         if (!(outputThirdLine.ToString()).Contains("M"))
@@ -102,6 +121,7 @@ namespace CalculatorTest
                         if ((outputThirdLine.ToString()).Contains("M"))
                         {
                             equation += memory;
+                            outputSecondline.Replace(outputSecondline.ToString(), memory.ToString());
                             ClearInput(equation);
                         }
                     }
@@ -114,37 +134,97 @@ namespace CalculatorTest
                     else if (cki.Key == ConsoleKey.S)
                     {
                         double lastNum = GetLastNum(ref equation);
-                        equation += Math.Sinh(GetAngle(lastNum));
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("Sinh(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            outputFirstLine.Append("Sinh(" + lastNum + ")");
+                            MathFunctionCalled = true;
+                        }
+                        equation += Math.Sinh(lastNum);
+                        outputSecondline.Clear();
                         ClearInput(equation);
                     }
                     else if (cki.Key == ConsoleKey.T)
                     {
                         double lastNum = GetLastNum(ref equation);
-                        equation += Math.Tanh(GetAngle(lastNum));
+                        equation += Math.Tanh(lastNum);
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("Tanh(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            outputFirstLine.Append("Tanh(" + lastNum + ")");
+                            MathFunctionCalled = true;
+                        }
+                        outputSecondline.Clear();
                         ClearInput(equation);
                     }
                     else if (cki.Key == ConsoleKey.O)
                     {
                         double lastNum = GetLastNum(ref equation);
-                        equation += Math.Cosh(GetAngle(lastNum));
+                        equation += Math.Cosh(lastNum);
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("Cosh(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            outputFirstLine.Append("Cosh(" + lastNum + ")");
+                            MathFunctionCalled = true;
+                        }
+                        outputSecondline.Clear();
                         ClearInput(equation);
                     }
                     else if (cki.Key == ConsoleKey.U)
                     {
                         double lastNum = GetLastNum(ref equation);
-                        equation += Math.Cosh(1 / GetAngle(lastNum));
+                        equation += Math.Cosh(1 / lastNum);
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("Sech(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            outputFirstLine.Append("Sech(" + lastNum + ")");
+                            MathFunctionCalled = true;
+                        }
+                        outputSecondline.Clear();
                         ClearInput(equation);
                     }
                     else if (cki.Key == ConsoleKey.I)
                     {
                         double lastNum = GetLastNum(ref equation);
-                        equation += Math.Sinh(1 / GetAngle(lastNum));
+                        equation += Math.Sinh(1 / lastNum);
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("Csch(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            outputFirstLine.Append("Csch(" + lastNum + ")");
+                            MathFunctionCalled = true;
+                        }
+                        outputSecondline.Clear();
                         ClearInput(equation);
                     }
                     else if (cki.Key == ConsoleKey.J)
                     {
                         double lastNum = GetLastNum(ref equation);
-                        equation += Math.Tanh(1 / GetAngle(lastNum));
+                        equation += Math.Tanh(1 / lastNum);
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("Coth(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            outputFirstLine.Append("Coth(" + lastNum + ")");
+                            MathFunctionCalled = true;
+                        }
+                        outputSecondline.Clear();
                         ClearInput(equation);
                     }
                     else if (cki.Key == ConsoleKey.H)
@@ -153,6 +233,17 @@ namespace CalculatorTest
                         ConsoleKeyInfo ckiH = Console.ReadKey();
                         ClearInput(equation);
                     }
+
+                    else if (cki.Key == ConsoleKey.N)
+                    {
+                        double lastNum = GetLastNum(ref equation);
+                        equation += Math.Exp(lastNum);
+                        outputFirstLine.Append(Math.Exp(lastNum));
+                        MathFunctionCalled = true;
+                        outputSecondline.Clear();
+                        ClearInput(equation);
+                    }
+
                 }
                 else if ((cki.Modifiers & ConsoleModifiers.Shift) != 0)
                 {
@@ -166,288 +257,698 @@ namespace CalculatorTest
                             }
                             equation += result;
                         }
+                        else if (cki.KeyChar == '+' || cki.KeyChar == '-')
+                        {
+                            if (equation != "" && !equation.Contains('(') && !equation.Contains(')') && !lastOperator)
+                            {
+                                index = -1;
+                                outputSecondline.Replace(outputSecondline.ToString(), Calculator(ref index, equation, true).ToString());
+                            }
+                        }
+                        else if (cki.KeyChar == '*' || cki.KeyChar == '^' || cki.KeyChar == '%')
+                        {
+                            outputFirstLine.Append(outputSecondline.ToString() + cki.KeyChar);
+                            outputSecondline.Clear();
+                        }
+                        else
+                        {
+
+                        }
                         equation += cki.KeyChar;
                         ClearInput(equation);
                     }
                     else if (cki.Key == ConsoleKey.D3)
                     {
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("Cube(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            string eq = equation;
+                            outputFirstLine.Append("Cube(" + GetLastNum(ref eq) + ")");
+                            MathFunctionCalled = true;
+                        }
                         equation += "^3";
+                        outputSecondline.Clear();
                         ClearInput(equation);
                     }
                     else if (cki.Key == ConsoleKey.D2)
                     {
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("Sqrt(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            string eq = equation;
+                            outputFirstLine.Append("Sqrt(" + GetLastNum(ref eq) + ")");
+                            MathFunctionCalled = true;
+                        }
                         equation += "^0.5";
+                        outputSecondline.Clear();
+                        ClearInput(equation);
+                    }
+                    else if (cki.Key == ConsoleKey.C)
+                    {
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("cuberoot(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            string eq = equation;
+                            outputFirstLine.Append("cuberoot(" + GetLastNum(ref eq) + ")");
+                            MathFunctionCalled = true;
+                        }
+                        equation += "^0.3333333333";
+                        outputSecondline.Clear();
                         ClearInput(equation);
                     }
                     else if (cki.Key == ConsoleKey.S)
                     {
                         double lastNum = GetLastNum(ref equation);
-                        equation += Math.Asin(GetAngle(lastNum));
+                        if(lastNum < -1 || lastNum > 1)
+                        {
+                            throw new Exception("Invalid Input");
+                        }
+                        double angle = Math.Asin(GetAngle(lastNum));
+                        equation += angle * (180/Math.PI);
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("Asin(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            outputFirstLine.Append("Asin(" + lastNum + ")");
+                            MathFunctionCalled = true;
+                        }
+                        outputSecondline.Clear();
                         ClearInput(equation);
                     }
                     else if (cki.Key == ConsoleKey.T)
                     {
                         double lastNum = GetLastNum(ref equation);
+                        if (lastNum < -1 || lastNum > 1)
+                        {
+                            throw new Exception("Invalid Input");
+                        }
                         equation += Math.Atan(GetAngle(lastNum));
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("Atan(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            outputFirstLine.Append("Atan(" + lastNum + ")");
+                            MathFunctionCalled = true;
+                        }
+                        outputSecondline.Clear();
                         ClearInput(equation);
                     }
                     else if (cki.Key == ConsoleKey.O)
                     {
                         double lastNum = GetLastNum(ref equation);
                         equation += Math.Acos(GetAngle(lastNum));
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("Acos(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            outputFirstLine.Append("Acos(" + lastNum + ")");
+                            MathFunctionCalled = true;
+                        }
+                        outputSecondline.Clear();
                         ClearInput(equation);
                     }
                     else if (cki.Key == ConsoleKey.U)
                     {
                         double lastNum = GetLastNum(ref equation);
-                        equation += Math.Acos(1 / GetAngle(lastNum));
+                        equation += Math.Acos(1 / GetAngle(lastNum));                        
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("Asec(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            outputFirstLine.Append("Asec(" + lastNum + ")");
+                            MathFunctionCalled = true;
+                        }
+                        outputSecondline.Clear();
                         ClearInput(equation);
                     }
                     else if (cki.Key == ConsoleKey.I)
                     {
                         double lastNum = GetLastNum(ref equation);
                         equation += Math.Asin(1 / GetAngle(lastNum));
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("Acsc(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            outputFirstLine.Append("Acsc(" + lastNum + ")");
+                            MathFunctionCalled = true;
+                        }
+                        outputSecondline.Clear();
                         ClearInput(equation);
                     }
                     else if (cki.Key == ConsoleKey.J)
                     {
                         double lastNum = GetLastNum(ref equation);
                         equation += Math.Atan(1 / GetAngle(lastNum));
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("Acot(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            outputFirstLine.Append("Acot(" + lastNum + ")");
+                            MathFunctionCalled = true;
+                        }
+                        outputSecondline.Clear();
                         ClearInput(equation);
                     }
                     else if (cki.KeyChar == '|')
                     {
                         double lastNum = GetLastNum(ref equation);
                         equation += Math.Abs(lastNum);
-                        ClearInput(equation);
-                    }
-                }
-                else if (cki.Key == ConsoleKey.Escape)
-                {
-                    equation = "";
-                    ClearInput(equation);
-                }
-                else if (cki.Key == ConsoleKey.Y)
-                {
-                    equation += "^";
-                    ClearInput(equation);
-                }
-                else if (cki.Key == ConsoleKey.Q)
-                {
-                    equation += "^2";
-                    ClearInput(equation);
-                }
-                else if (cki.Key == ConsoleKey.P)
-                {
-                    equation += Math.PI;
-                    ClearInput(equation);
-                }
-                else if (cki.Key == ConsoleKey.R)
-                {
-                    double lastValue = GetLastNum(ref equation);
-                    equation += "1/" + lastValue;
-                    ClearInput(equation);
-                }
-                else if (cki.Key == ConsoleKey.F9)
-                {
-                    double lastNum = GetLastNum(ref equation);
-                    if (equation.Length > 0)
-                    {
-                        equation = equation.Remove(equation.Length - 1);
-                    }
-                    lastNum *= -1;
-                    if (lastNum >= 0)
-                    {
-                        equation += "+";
-                    }
-                    equation += lastNum;
-                    ClearInput(equation);
-                }
-                else if (cki.Key == ConsoleKey.G)
-                {
-                    double lastNum = GetLastNum(ref equation);
-                    equation += powerCalculator.Power(2, lastNum);
-                    ClearInput(equation);
-                }
-                else if (cki.Key == ConsoleKey.L)
-                {
-                    double lastNum = GetLastNum(ref equation);
-                    equation += Math.Log(lastNum);
-                    ClearInput(equation);
-                }
-                else if (cki.Key == ConsoleKey.S)
-                {
-                    double lastNum = GetLastNum(ref equation);
-                    equation += Math.Sin(GetAngle(lastNum));
-                    ClearInput(equation);
-
-                }
-                else if (cki.Key == ConsoleKey.T)
-                {
-                    double lastNum = GetLastNum(ref equation);
-                    equation += Math.Tan(GetAngle(lastNum));
-                    ClearInput(equation);
-                }
-                else if (cki.Key == ConsoleKey.O)
-                {
-                    double lastNum = GetLastNum(ref equation);
-                    equation += Math.Cos(GetAngle(lastNum));
-                    ClearInput(equation);
-                }
-                else if (cki.Key == ConsoleKey.U)
-                {
-                    double lastNum = GetLastNum(ref equation);
-                    equation += Math.Cos(1 / GetAngle(lastNum));
-                    ClearInput(equation);
-                }
-                else if (cki.Key == ConsoleKey.I)
-                {
-                    double lastNum = GetLastNum(ref equation);
-                    equation += Math.Sin(1 / GetAngle(lastNum));
-                    ClearInput(equation);
-                }
-                else if (cki.Key == ConsoleKey.J)
-                {
-                    double lastNum = GetLastNum(ref equation);
-                    equation += Math.Tan(1 / GetAngle(lastNum));
-                    ClearInput(equation);
-                }
-                else if (cki.Key == ConsoleKey.F4)
-                {
-                    if ((outputThirdLine.ToString()).Contains("DEG"))
-                    {
-                        outputThirdLine.Replace("DEG", "RAD");
-                    }
-                    else if ((outputThirdLine.ToString()).Contains("GRAD"))
-                    {
-                        outputThirdLine.Replace("GRAD", "RAD");
-                    }
-                    ClearInput(equation);
-                }
-                else if (cki.Key == ConsoleKey.F5)
-                {
-                    if ((outputThirdLine.ToString()).Contains("DEG"))
-                    {
-                        outputThirdLine.Replace("DEG", "GRAD");
-                    }
-                    else if ((outputThirdLine.ToString()).Contains("RAD"))
-                    {
-                        outputThirdLine.Replace("RAD", "GRAD");
-                    }
-                    ClearInput(equation);
-                }
-                else if (cki.Key == ConsoleKey.F3)
-                {
-                    if ((outputThirdLine.ToString()).Contains("RAD"))
-                    {
-                        outputThirdLine.Replace("RAD", "DEG");
-                    }
-                    else if ((outputThirdLine.ToString()).Contains("GRAD"))
-                    {
-                        outputThirdLine.Replace("GRAD", "DEG");
-                    }
-                    ClearInput(equation);
-                }
-                else if (cki.Key == ConsoleKey.E)
-                {
-                    equation += Math.E;
-                    ClearInput(equation);
-                }
-                else if (cki.Key == ConsoleKey.N)
-                {
-                    double lastNum = GetLastNum(ref equation);
-                    equation += Math.Log(lastNum, Math.E);
-                    ClearInput(equation);
-                }
-                else if (cki.Key == ConsoleKey.V)
-                {
-                    if ((outputThirdLine.ToString()).Contains("F-E"))
-                    {
-                        outputThirdLine.Replace("F-E", "E-F");                        
-                    }
-                    else
-                    {
-                        outputThirdLine.Replace("E-F", "F-E");
-                    }
-                    ClearInput(equation);
-                    if (equation =="" && result.HasValue)
-                    {
-                        Console.SetCursorPosition(0, 1);
-                        Console.Write(PrintResult(result.Value));
-                        Console.SetCursorPosition(equation.Length, 0);
-                    }
-                }
-                else if (cki.KeyChar == '[')
-                {
-                    double lastNum = GetLastNum(ref equation);
-                    equation += Math.Floor(lastNum);
-                    ClearInput(equation);
-                }
-                else if (cki.KeyChar == ']')
-                {
-                    double lastNum = GetLastNum(ref equation);
-                    equation += Math.Ceiling(lastNum);
-                    ClearInput(equation);
-                }
-                else
-                {
-                    char input = cki.KeyChar;
-                    if (equation == "")
-                    {
-                        ClearInput(input.ToString());
-                    }
-                    if (input == '=' || input == 13)
-                    {
-                        if (equation == "")
+                        if (MathFunctionCalled)
                         {
-                            throw new Exception("");
+                            outputFirstLine.Append("Abs(" + GetLastValue() + ")");
                         }
                         else
                         {
-                            if (input == 13)
-                            {
-                                ClearInput(equation + "=");
-                            }
-                            gettingInput = false;
+                            outputFirstLine.Append("Abs(" + lastNum + ")");
+                            MathFunctionCalled = true;
                         }
-                    }
-                    else if (input == 8 || cki.Key == ConsoleKey.Delete)
-                    {
-                        equation = equation.Remove(equation.Length - 1);
+                        outputSecondline.Clear();
                         ClearInput(equation);
                     }
-                    else if (input == ' ' || (input == '.' && decimalCounted))
+                    else if (cki.KeyChar == '(' || cki.KeyChar == ')')
                     {
-                        continue;
+                        equation += cki.KeyChar;
+                        outputFirstLine.Append(cki.KeyChar);
+                        ClearInput(equation);
+                    }
+                }
+                else
+                {
+                    if (cki.Key == ConsoleKey.Escape)
+                    {
+                        equation = "";
+                        outputSecondline.Clear();
+                        outputFirstLine.Clear();
+                        ClearInput(equation);
+                    }
+                    else if (cki.Key == ConsoleKey.Y)
+                    {
+                        equation += "^";
+                        outputSecondline.Replace(outputSecondline.ToString(), "0");
+                        outputFirstLine.Append("^");
+                        ClearInput(equation);
+                    }
+                    else if (cki.Key == ConsoleKey.Q)
+                    {
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("Sqr(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            string eq = equation;
+                            outputFirstLine.Append("Sqr(" + GetLastNum(ref eq) + ")");
+                            MathFunctionCalled = true;
+                        }
+                        equation += "^2";
+                        outputSecondline.Clear();
+                        ClearInput(equation);
+                    }
+                    else if (cki.Key == ConsoleKey.P)
+                    {
+                        equation += Math.PI;
+                        outputFirstLine.Append(Math.PI);
+                        MathFunctionCalled = true;
+                        ClearInput(equation);
+                    }
+                    else if (cki.Key == ConsoleKey.R)
+                    {
+                        double lastValue = GetLastNum(ref equation);
+                        equation += "1/" + lastValue;
+                        outputFirstLine.Append("1/" + lastValue);
+                        ClearInput(equation);
+                    }
+                    else if (cki.Key == ConsoleKey.F9)
+                    {
+                        double lastNum = GetLastNum(ref equation);
+                        if (equation.Length > 0)
+                        {
+                            equation = equation.Remove(equation.Length - 1);
+                            outputFirstLine.Remove(outputFirstLine.Length - 1, 1);
+                        }
+                        lastNum *= -1;
+                        if (lastNum >= 0)
+                        {
+                            outputFirstLine.Append("+" + lastNum);
+                            equation += "+";
+                        }
+                        else
+                        {
+                            outputFirstLine.Append(lastNum);
+                        }
+                        equation += lastNum;
+                        ClearInput(equation);
+                    }
+                    else if (cki.Key == ConsoleKey.G)
+                    {
+                        double lastNum = GetLastNum(ref equation);
+                        equation += powerCalculator.Power(2, lastNum);
+                        outputFirstLine.Append(powerCalculator.Power(2, lastNum));
+                        MathFunctionCalled = true;
+                        ClearInput(equation);
+                    }
+                    else if (cki.Key == ConsoleKey.L)
+                    {
+                        double lastNum = GetLastNum(ref equation);
+                        equation += Math.Log(lastNum);
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("Log(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            outputFirstLine.Append("Log(" + lastNum + ")");
+                            MathFunctionCalled = true;
+                        }
+                        outputSecondline.Clear();
+                        ClearInput(equation);
+                    }
+                    else if (cki.Key == ConsoleKey.S)
+                    {
+                        double lastNum = GetLastNum(ref equation);
+                        equation += Math.Sin(GetAngleUsingMathFunction(lastNum));
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("Sin(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            outputFirstLine.Append("Sin(" + lastNum + ")");
+                            MathFunctionCalled = true;
+                        }
+                        outputSecondline.Clear();
+                        ClearInput(equation);
+                    }
+                    else if (cki.Key == ConsoleKey.T)
+                    {
+                        double lastNum = GetLastNum(ref equation);
+                        if (lastNum == 90 || lastNum == 270)
+                        {
+                            throw new Exception("Invalid Input");
+                        }
+                        equation += Math.Tan(GetAngleUsingMathFunction(lastNum));
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("Tan(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            outputFirstLine.Append("Tan(" + lastNum + ")");
+                            MathFunctionCalled = true;
+                        }
+                        outputSecondline.Clear();
+                        ClearInput(equation);
+                    }
+                    else if (cki.Key == ConsoleKey.O)
+                    {
+                        double lastNum = GetLastNum(ref equation);
+                        equation += Math.Cos(GetAngleUsingMathFunction(lastNum));
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("Cos(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            outputFirstLine.Append("Cos(" + lastNum + ")");
+                            MathFunctionCalled = true;
+                        }
+                        outputSecondline.Clear();
+                        ClearInput(equation);
+                    }
+                    else if (cki.Key == ConsoleKey.U)
+                    {
+                        double lastNum = GetLastNum(ref equation);
+                        equation += 1 / Math.Cos(GetAngleUsingMathFunction(lastNum));
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("Sec(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            outputFirstLine.Append("Sec(" + lastNum + ")");
+                            MathFunctionCalled = true;
+                        }
+                        outputSecondline.Clear();
+                        ClearInput(equation);
+                    }
+                    else if (cki.Key == ConsoleKey.I)
+                    {
+                        double lastNum = GetLastNum(ref equation);
+                        equation += 1 / Math.Sin(GetAngleUsingMathFunction(lastNum));
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("Csc(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            outputFirstLine.Append("Csc(" + lastNum + ")");
+                            MathFunctionCalled = true;
+                        }
+                        outputSecondline.Clear();
+                        ClearInput(equation);
+                    }
+                    else if (cki.Key == ConsoleKey.J)
+                    {
+                        double lastNum = GetLastNum(ref equation);
+                        equation += 1 / Math.Tan(GetAngleUsingMathFunction(lastNum));
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("Cot(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            outputFirstLine.Append("Cot(" + lastNum + ")");
+                            MathFunctionCalled = true;
+                        }
+                        outputSecondline.Clear();
+                        ClearInput(equation);
+                    }
+                    else if (cki.Key == ConsoleKey.F4)
+                    {
+                        if ((outputThirdLine.ToString()).Contains("DEG"))
+                        {
+                            outputThirdLine.Replace("DEG", "RAD");
+                        }
+                        else if ((outputThirdLine.ToString()).Contains("GRAD"))
+                        {
+                            outputThirdLine.Replace("GRAD", "RAD");
+                        }
+                        ClearInput(equation);
+                    }
+                    else if (cki.Key == ConsoleKey.F5)
+                    {
+                        if ((outputThirdLine.ToString()).Contains("DEG"))
+                        {
+                            outputThirdLine.Replace("DEG", "GRAD");
+                        }
+                        else if ((outputThirdLine.ToString()).Contains("RAD"))
+                        {
+                            outputThirdLine.Replace("RAD", "GRAD");
+                        }
+                        ClearInput(equation);
+                    }
+                    else if (cki.Key == ConsoleKey.F3)
+                    {
+                        if ((outputThirdLine.ToString()).Contains("GRAD"))
+                        {
+                            outputThirdLine.Replace("GRAD", "DEG");
+                        }
+                        else if ((outputThirdLine.ToString()).Contains("RAD"))
+                        {
+                            outputThirdLine.Replace("RAD", "DEG");
+                        }
+                        ClearInput(equation);
+                    }
+                    else if (cki.Key == ConsoleKey.E)
+                    {
+                        equation += Math.E;
+                        outputSecondline.Clear();
+                        outputFirstLine.Append(Math.E);
+                        MathFunctionCalled = true;
+                        ClearInput(equation);
+                    }
+                    else if (cki.Key == ConsoleKey.N)
+                    {
+                        double lastNum = GetLastNum(ref equation);
+                        equation += Math.Log(lastNum, Math.E);
+                        outputSecondline.Replace(outputSecondline.ToString(), (Math.Log(lastNum, Math.E)).ToString());
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("ln(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            outputFirstLine.Append("ln(" + lastNum + ")");
+                            MathFunctionCalled = true;
+                        }
+                        ClearInput(equation);
+                    }
+                    else if (cki.Key == ConsoleKey.V)
+                    {
+                        if ((outputThirdLine.ToString()).Contains("F-E"))
+                        {
+                            outputThirdLine.Replace("F-E", "E-F");
+                        }
+                        else
+                        {
+                            outputThirdLine.Replace("E-F", "F-E");
+                        }
+                        ClearInput(equation);
+                        if (equation == "" && result != null)
+                        {
+                            outputSecondline.Replace(outputSecondline.ToString(), PrintResult(result.ToString()));
+                        }
+                    }
+                    else if (cki.Key == ConsoleKey.UpArrow)
+                    {
+                        if (historyPointer > 0)
+                        {
+                            historyPointer--;
+                            equation = history[historyPointer];
+                            outputFirstLine.Replace(outputFirstLine.ToString(), equation);
+                            outputSecondline.Replace(outputSecondline.ToString(), Calculator(ref index, equation, true).ToString());
+                            ClearInput(equation);
+                        }
+                        else
+                        {
+                            equation = "";
+                            outputFirstLine.Clear();
+                            outputSecondline.Clear();
+                            ClearInput(equation);
+                        }
+                    }
+                    else if (cki.Key == ConsoleKey.DownArrow)
+                    {
+                        historyPointer++;
+                        if (history[historyPointer] != null)
+                        {
+                            equation = history[historyPointer];
+                            outputFirstLine.Replace(outputFirstLine.ToString(), equation);
+                            outputSecondline.Replace(outputSecondline.ToString(), Calculator(ref index, equation, true).ToString());
+                            ClearInput(equation);
+                        }
+                        else
+                        {
+                            historyPointer--;
+                            outputSecondline.Clear();
+                            equation = "";
+                            outputFirstLine.Clear();
+                            ClearInput(equation);
+                        }
+                    }
+                    else if (cki.Key == ConsoleKey.Z)
+                    {
+                        history = null;
+                        historyPointer = 0;
+                        history = new string[short.MaxValue - 1];
+                    }
+                    else if (cki.KeyChar == '[')
+                    {
+                        double lastNum = GetLastNum(ref equation);
+                        equation += Math.Floor(lastNum);
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("floor(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            outputFirstLine.Append("floor(" + lastNum + ")");
+                            MathFunctionCalled = true;
+                        }
+                        ClearInput(equation);
+                    }
+                    else if (cki.KeyChar == ']')
+                    {
+                        double lastNum = GetLastNum(ref equation);
+                        equation += Math.Ceiling(lastNum);
+                        if (MathFunctionCalled)
+                        {
+                            outputFirstLine.Append("Ceil(" + GetLastValue() + ")");
+                        }
+                        else
+                        {
+                            outputFirstLine.Append("Ceil(" + lastNum + ")");
+                            MathFunctionCalled = true;
+                        }
+                        ClearInput(equation);
                     }
                     else
                     {
-                        if (input == '+' || input == '-' || input == '*' || input == '/' || input == '%' || input == '^')
+                        char input = cki.KeyChar;
+                        if (equation == "")
+                        {
+                            ClearInput(input.ToString());
+                        }
+                        if (input == '=' || input == 13)
                         {
                             if (equation == "")
                             {
-                                if (result == null && !(input == '+' || input == '-'))
-                                {
-                                    throw new Exception("");
-                                }
-                                equation += result;
-                                ClearInput(result + "" + input);
+                                throw new Exception("");
                             }
-                            decimalCounted = false;
+                            else
+                            {
+                                if (!MathFunctionCalled)
+                                {
+                                    outputFirstLine.Append(outputSecondline.ToString() + "=");
+                                }
+                                else
+                                {
+                                    outputFirstLine.Append("=");
+                                }
+                                gettingInput = false;
+                            }
+                            if (lastOperator)
+                            {
+                                equation += outputSecondline.ToString();
+                            }
+                            ClearInput(equation + "=");
+                            history[historyPointer] = equation;
+                            historyPointer++;
+                            outputSecondline.Clear();
                         }
-                        else if (input == '.')
+                        else if (input == 8 || cki.Key == ConsoleKey.Delete)
                         {
-                            decimalCounted = true;
-                        }
+                            if (outputSecondline.Length == 0 || lastOperator || equation.Length == 0)
+                                continue;
 
-                        equation += input;
+                            outputSecondline.Remove(outputSecondline.Length - 1, 1);
+                            equation = equation.Remove(equation.Length - 1);
+                            ClearInput(equation);
+                        }
+                        else if (input == ' ' || (input == '.' && decimalCounted))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            if (!(input == '*' || input == '/' || input == '%' || input == '^'))
+                            {
+                                if (outputSecondline.ToString() == "0")
+                                {
+                                    outputSecondline.Replace("0", input.ToString());
+                                }
+                                else if (index == -1)
+                                {
+                                    outputSecondline.Append(input);
+                                }
+                                else
+                                {
+                                    outputSecondline.Replace(outputSecondline.ToString(), input.ToString());
+                                    index = -1;
+                                }
+                            }
+                            else
+                            {
+                                if (!MathFunctionCalled && (outputSecondline.Length > 0))
+                                {
+                                    if (outputFirstLine.ToString() == "0")
+                                        outputFirstLine.Replace("0", outputSecondline.ToString());
+                                    else
+                                        outputFirstLine.Append(outputSecondline);
+                                }
+                                outputSecondline.Clear();
+                            }
+                            if (input == '+' || input == '-' || input == '*' || input == '/' || input == '%' || input == '^')
+                            {
+                                if (!MathFunctionCalled && (outputSecondline.Length > 0))
+                                {
+                                    if (outputFirstLine.ToString() == "0")
+                                        outputFirstLine.Replace("0", outputSecondline.ToString());
+                                    else
+                                        outputFirstLine.Append(outputSecondline);
+                                }
+
+                                if (equation.Length > 0 && equation.Last() == '.')
+                                {
+                                    equation += "0";
+                                }
+                                if (equation == "")
+                                {
+                                    if (result == null && !(input == '+' || input == '-'))
+                                    {
+                                        throw new Exception("");
+                                    }
+                                    else if (result != null)
+                                    {
+                                        equation += result;
+                                        outputSecondline.Replace(outputSecondline.ToString(), result.ToString());
+                                    }
+                                }
+                                else if (input == '+' || input == '-')
+                                {
+                                    if (equation != "" && !equation.Contains('(') && !equation.Contains(')') && !lastOperator)
+                                    {
+                                        index = -1;
+                                        outputSecondline.Replace(outputSecondline.ToString(), Calculator(ref index, equation, true).ToString());
+                                    }
+                                    if (MathFunctionCalled)
+                                    {
+                                        outputFirstLine.Append(input);
+                                    }
+                                }
+                                else
+                                {
+                                    outputFirstLine.Append(input);
+                                }
+                                if (lastOperator)
+                                {
+                                    equation = equation.Remove(equation.Length - 1);
+                                }
+                                lastOperator = true;
+                                decimalCounted = false;
+                            }
+                            else if (input == '.')
+                            {
+                                if (MathFunctionCalled)
+                                {
+                                    GetLastNum(ref equation);
+                                    GetLastValue();
+                                }
+                                decimalCounted = true;
+                                lastOperator = false;
+                            }
+                            else
+                            {
+                                if (MathFunctionCalled)
+                                {
+                                    GetLastNum(ref equation);
+                                    GetLastValue();
+                                }
+                                lastOperator = false;
+                            }
+                            equation += input;
+                            ClearInput(equation);
+                            MathFunctionCalled = false;
+                        }
                     }
                 }
             }
             Console.WriteLine();
         }
 
-        public double Calculator(ref int i, string equation, bool isMain = false)
+        //BODMAS || BOPS
+        public static double Calculator(ref int i, string equation, bool isMain = false)
         {
             int equationLength = equation.Length;
             int positionForOperand = 0;
@@ -530,7 +1031,7 @@ namespace CalculatorTest
                                 integer = -integer;
                                 negativeSignedNumber = false;
                             }
-                            Push(operands, ref positionForOperand, integer);
+                            Push(operands, ref positionForOperand, Math.Round(integer, 10));
                             integer = 0;
                             isDecimal = false;
                         }
@@ -542,7 +1043,7 @@ namespace CalculatorTest
                             integer = -integer;
                             negativeSignedNumber = false;
                         }
-                        Push(operands, ref positionForOperand, integer);
+                        Push(operands, ref positionForOperand, Math.Round(integer, 10));
                         integer = 0;
                         isDecimal = false;
                     }
@@ -588,13 +1089,13 @@ namespace CalculatorTest
                 }
                 else
                 {
-                    throw new Exception("Invalid Input");
+                    throw new Exception("");
                 }
             }
 
             if (!isMain && !closingBracket)
             {
-                throw new Exception("Equation does not contains Closing Bracket");
+                throw new Exception("");
             }
 
             double[] operandsStackForPrecedence = new double[positionForOperand];
@@ -645,8 +1146,10 @@ namespace CalculatorTest
                     {
                         if (secondNumber == (1.0 / 2.0))
                             result = Math.Round(powerCalculator.SquareRoot(firstNumber), 4);
-                        else if (secondNumber == (1.0 / 3.0))
-                            result = Math.Round(powerCalculator.CubeRoot(firstNumber), 4);
+                        else if (secondNumber == (1.0 / 3.0) || secondNumber == 0.3333333333)
+                        {
+                            result = Math.Round(powerCalculator.CubeRoot(firstNumber), 5);
+                        }
                         else if (secondNumber % 2 == 1 || secondNumber % 2 == 0)
                             result = powerCalculator.Power(firstNumber, secondNumber);
                         else
@@ -731,7 +1234,7 @@ namespace CalculatorTest
             }
             else
             {
-                throw new Exception("Invalid Input");
+                throw new Exception("");
             }
         }
 
@@ -739,14 +1242,22 @@ namespace CalculatorTest
         {
             Console.Clear();
             Console.SetCursorPosition(0, 0);
-            if(equation == "")
+            if (outputFirstLine.Length == 0)
             {
                 Console.Write(0);
-                Console.SetCursorPosition(0, 0);
             }
             else
             {
-                Console.Write(equation);
+                Console.WriteLine(outputFirstLine);
+            }
+            Console.SetCursorPosition(0, 1);
+            if (outputSecondline.Length == 0)
+            {
+                Console.WriteLine(0);
+            }
+            else
+            {
+                Console.WriteLine(outputSecondline);
             }
             Console.SetCursorPosition(0, 2);
             Console.WriteLine(outputThirdLine);
@@ -788,22 +1299,38 @@ namespace CalculatorTest
         {
             if ((outputThirdLine.ToString()).Contains("DEG"))
             {
-                return (num * (Math.PI / 180));
+                return num * ((22 / 7) / 180);
             }
-            else if ((outputThirdLine.ToString()).Contains("RAD"))
+            else if ((outputThirdLine.ToString()).Contains("GRAD"))
             {
-                return num;
+                return num * ((22 / 7) / 200);
             }
             else
             {
-                return (num * (200 / 180));
+                return num;
+            }
+        }
+
+        public static double GetAngleUsingMathFunction(double num)
+        {
+            if ((outputThirdLine.ToString()).Contains("DEG"))
+            {
+                return num * (Math.PI / 180);
+            }
+            else if ((outputThirdLine.ToString()).Contains("GRAD"))
+            {
+                return num * (Math.PI / 200);
+            }
+            else
+            {
+                return num;
             }
         }
 
         public static void PrintHelp()
         {
-            string printLine = @"
-CTRL + M    - Store in memory, in Standard mode, Scientific mode
+            string printLine =
+@"CTRL + M    - Store in memory, in Standard mode, Scientific mode
 CTRL + P    - Add to memory, in Standard mode, Scientific mode
 CTRL + Q    - Subtract from memory, in Standard mode, Scientific mode
 CTRL + R    - Recall from memory, in Standard mode, Scientific mode
@@ -818,8 +1345,8 @@ F3          - Select DEG in Scientific mode
 F4          - Select RAD in Scientific mode
 F5          - Select GRAD in Scientific mode
 G           - Select 2^x in Scientific mode
-CTRL + G    - Select 10xin Scientific mode
-S           - Select 10xin in Scientific mode
+CTRL + G    - Select 10^x in Scientific mode
+S           - Select Sin in in Scientific mode
 SHIFT + S   - Select sin-1 in Scientific mode
 CTRL + S    - Select sinh in Scientific mode
 T           - Select tan in Scientific mode
@@ -848,7 +1375,12 @@ Y, ^        - Select x^y in Scientific mode
 !           - Select n! in Scientific mode
 %           - Select mod in Scientific mode
 E           - Select Value Of E
-
+V           - Toggles on/off F-E buttonin Scientific mode
+N           - Select ln in Scientific mode
+UP ARROW    - Move up in history list
+DOWN ARROW  - Move down in history list
+Z           - Clear History
+CTRL + N    - Select e^x in Scientific mode
 
 
 
@@ -861,31 +1393,60 @@ E           - Select Value Of E
 
 
 Press Any Key To return Back to Calculator Window
-                ";
+";
             Console.WriteLine(printLine);
-
         }
 
-        public static string PrintResult(double result)
+        public static string PrintResult(string result)
         {
+            if (result == "NaN")
+            {
+                return "0";
+            }
             if ((outputThirdLine.ToString()).Contains("F-E"))
             {
-                string resultInString = result.ToString();
+                string resultInString = Convert.ToDouble(result).ToString("e");
+                StringBuilder returnString = new StringBuilder("");
+                foreach (char ch in resultInString)
+                {
+                    if (ch == '0')
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        returnString.Append(ch);
+                    }
+                }
+                return returnString.ToString();
+            }
+            else
+            {
+                return result;
+            }
+        }
+
+        public static string GetLastValue()
+        {
+            if (outputFirstLine.Length == 0)
+                return "";
+
+            else
+            {
+                string sub = "";
                 int i;
                 int count = 0;
-                for (i = resultInString.Length - 1; i >= 0; i--)
+                for (i = outputFirstLine.Length - 1; i >= 0; i--)
                 {
-                    if (resultInString[i] != '0')
+                    if (outputFirstLine[i] == '*' || outputFirstLine[i] == '/' || outputFirstLine[i] == '-' || outputFirstLine[i] == '+' || outputFirstLine[i] == '^' || outputFirstLine[i] == '%')
                     {
                         break;
                     }
                     count++;
                 }
-                return String.Format(resultInString.Remove(i + 1) + "E+" + count);
-            }
-            else
-            {
-                return result.ToString();
+                sub = (outputFirstLine.ToString()).Substring(i + 1, count);
+                outputFirstLine.Remove(i + 1, count);
+                return sub;
             }
         }
     }
